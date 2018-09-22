@@ -80,6 +80,11 @@ let router = new Router({
           path: '/admin/option/general',
           name: 'OptionGeneral',
           component: resolve => require(['@/components/admin/options/OptionGeneral.vue'], resolve)
+        },
+        {
+          path: '/admin/write/article',
+          name: 'WriteArticle',
+          component: resolve => require(['@/components/admin/write/WriteArticlePage.vue'], resolve)
         }
       ]
     }

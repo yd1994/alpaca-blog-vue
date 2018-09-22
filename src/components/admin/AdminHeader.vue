@@ -9,7 +9,7 @@
         <MenuItem name="Outline">概要</MenuItem>
         <MenuItem name="PersonalInfo">个人信息</MenuItem>
       </Submenu>
-      <MenuItem class="model-menu-item" name="2">
+      <MenuItem class="model-menu-item" name="WriteArticle">
         <Icon class="item-icon" type="md-code" />
         撰写
       </MenuItem>
