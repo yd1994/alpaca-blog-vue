@@ -2,7 +2,10 @@
   <div class="write-article">
     <h5>撰写文章</h5>
     <Divider />
-    <mavon-editor v-model="content" :subfield="false"/>
+    <mavon-editor v-model="content" :subfield="subfuelf"/>
+    <Card>
+      <h1 @mouseenter="mouseenter">SUBMIT</h1>
+    </Card>
   </div>
 </template>
 
@@ -16,10 +19,18 @@ export default {
       content: ''
     }
   },
+  computed: {
+    subfuelf: function () {
+      return this.$store.state.screenWidth > 767
+    }
+  },
   methods: {
     imageAdd: function (pos, $file) {
       let formdata = new FormData()
       formdata.append('image', $file)
+    },
+    mouseenter: function () {
+      this.$Message.info({content: 'mouseenter'})
     }
   },
   components: {
