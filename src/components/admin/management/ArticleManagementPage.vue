@@ -29,7 +29,7 @@
       </Row>
     </div>
     <ArticleManagementCard v-for="article in articleList" :key="article.id" :article="article"></ArticleManagementCard>
-    <BackTop></BackTop>
+    <Page :total="100" :style="{textAlign: 'center'}" :simple="pageSimple" show-total @on-change="changePage" />
   </div>
 </template>
 
@@ -102,12 +102,19 @@ export default {
       ]
     }
   },
+  computed: {
+    pageSimple: function () {
+      return this.$store.state.screenWidth <= 767
+    }
+  },
   methods: {
     clickSearch: function () {
       this.$Message.info({content: 'test: ' + this.search.text + ' category: ' + this.search.category})
     },
     clickAddArticle: function () {
       this.$Message.info({content: 'click add article'})
+    },
+    changePage: function (page) {
     }
   },
   watch: {

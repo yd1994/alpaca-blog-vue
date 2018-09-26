@@ -10,6 +10,7 @@
         </Col>
       </Row>
       <CategoryManagementCard v-for="category in categoryList" :key="category.id" :category="category"></CategoryManagementCard>
+      <Page :total="100" :style="{textAlign: 'center'}" :simple="pageSimple" show-total @on-change="changePage" />
     </div>
 </template>
 
@@ -53,9 +54,16 @@ export default {
       ]
     }
   },
+  computed: {
+    pageSimple: function () {
+      return this.$store.state.screenWidth <= 767
+    }
+  },
   methods: {
     clickAddCategory: function () {
       this.utils.model.confirmDeletion({content: '删除苦难不会也'})
+    },
+    changePage: function (page) {
     }
   },
   components: {
