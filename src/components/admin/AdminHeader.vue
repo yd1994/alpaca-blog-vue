@@ -1,10 +1,12 @@
 <template>
   <div id="admin-header">
-    <Menu mode="horizontal" theme="dark" active-name="Outline" class="menu" @on-select="clickMenu" >
-      <Submenu class="model-menu-item" name="console">
+    <Menu ref="adminMenu" mode="horizontal" theme="dark" active-name="Outline" class="menu" @on-select="selectMenu">
+      <Submenu ref="subMenuConsole" class="model-menu-item" name="console">
         <template slot="title">
-          <Icon class="item-icon" type="md-browsers" />
-          控制台
+          <span @touchstart="touchStart('console')">
+            <Icon class="item-icon" type="md-browsers" />
+            控制台
+          </span>
         </template>
         <MenuItem name="Outline">概要</MenuItem>
         <MenuItem name="PersonalInfo">个人信息</MenuItem>
@@ -13,10 +15,12 @@
         <Icon class="item-icon" type="md-code" />
         撰写
       </MenuItem>
-      <Submenu class="model-menu-item" name="management">
+      <Submenu ref="subMenuManagement" class="model-menu-item" name="management">
         <template slot="title">
-          <Icon class="item-icon" type="ios-paper" />
-          管理
+          <span @touchstart="touchStart('management')">
+            <Icon class="item-icon" type="ios-paper" />
+            管理
+          </span>
         </template>
         <MenuItem name="ArticleManagement">文章</MenuItem>
         <MenuItem name="CategoryManagement">分类</MenuItem>
@@ -37,12 +41,28 @@ export default {
   name: 'AdminHeader',
   data () {
     return {
+      subMenuOpen: false
     }
   },
   methods: {
-    clickMenu: function (name) {
-      if (name.indexOf('-') !== -1 || name === '2') return
+    selectMenu: function (name) {
       this.$router.push({ name: name })
+    },
+    touchStart: function (name) {
+      /**
+       * 解决触屏端mouseenter的问题
+       * 添加点击监听触发Submenu组件 handleMouseenter() 函数
+       * ！！！点击文字方可触发
+       */
+      console.info('this.$refs.subMenuConsole', this.$refs.subMenuConsole)
+      switch (name) {
+        case 'console':
+          this.$refs.subMenuConsole.handleMouseenter()
+          break
+        case 'management':
+          this.$refs.subMenuManagement.handleMouseenter()
+          break
+      }
     }
   }
 }
