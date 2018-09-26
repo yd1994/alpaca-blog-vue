@@ -9,7 +9,6 @@
 <script>
 import AdminHeader from './AdminHeader'
 import AdminFooter from './ArticleFooter'
-
 export default {
   name: 'AdminPage',
   components: {
