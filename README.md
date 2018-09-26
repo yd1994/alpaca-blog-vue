@@ -7,6 +7,9 @@
 ``` bash
 # install dependencies
 npm install
+npm install --save axios
+npm install --save vuex
+npm install --save mavon-editor
 
 # serve with hot reload at localhost:8080
 npm run dev
