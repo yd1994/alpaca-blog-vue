@@ -1,6 +1,7 @@
 <template>
   <div id="app">
     <router-view/>
+    <BackTop></BackTop>
   </div>
 </template>
 
@@ -12,7 +13,8 @@ export default {
   components: {Header, Footer},
   data () {
     return {
-      screenWidth: document.body.clientWidth
+      screenWidth: document.body.clientWidth,
+      screenHeight: document.body.clientHeight
     }
   },
   mounted () {
@@ -20,13 +22,18 @@ export default {
     window.onresize = () => {
       return (() => {
         window.screenWidth = document.body.clientWidth
+        window.screenHeight = document.body.clientHeight
         that.screenWidth = window.screenWidth
+        that.screenHeight = window.clientHeight
       })()
     }
   },
   watch: {
     screenWidth (screenWidth) {
       this.$store.commit('changeScreenWidth', screenWidth)
+    },
+    screenHeight (screenHeight) {
+      this.$store.commit('changeScreenHeight', screenHeight)
     }
   }
 }

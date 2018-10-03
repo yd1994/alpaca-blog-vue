@@ -1,7 +1,11 @@
 <template>
   <div id="article-page">
     <h2>{{ article.title }}</h2>
-    <p><small>{{ article.time }}<Divider type="vertical"/><a @click="clickCategory">{{ article.category.name }}</a></small></p>
+    <p><small>
+      <Time v-if="article.created != undefined" :time="article.created" />
+      <Divider type="vertical"/>
+      <a v-if="article.category != undefined" @click="clickCategory">{{ article.category.name }}</a>
+    </small></p>
     <div class="article-page-content">{{ article.content }}</div>
   </div>
 </template>
@@ -16,23 +20,23 @@ export default {
   },
   data () {
     return {
-      article: {
-        id: '1',
-        title: 'How to stop data centres from gobbling up the world’s electricity',
-        content: 'Upload your latest holiday photos to Facebook, and there’s a chance they’ll end up stored in Prineville, Oregon, a small town where the firm has built three giant data centres and is planning two more. Inside these vast factories, bigger than aircraft carriers, tens of thousands of circuit boards are racked row upon row, stretching down windowless halls so long that staff ride through the corridors on scooters.',
-        category: {
-          id: '1',
-          name: '默认分类',
-          description: ''
-        },
-        time: '3天前'
-      }
+      article: {}
     }
   },
   methods: {
     clickCategory: function () {
-      this.$router.push({name: 'CategoryArticle', params: {categoryId: this.article.category.id}})
+      this.$router.push({name: 'CategoryArticle', params: {categoryId: this.article.category.id.toString()}})
+    },
+    loadArticle: function () {
+      let uri = this.$api.default.articles.uri + this.articleId
+      let params = {}
+      this.$api.get(uri, params, response => {
+        this.article = response.data
+      })
     }
+  },
+  mounted () {
+    this.loadArticle()
   }
 }
 </script>

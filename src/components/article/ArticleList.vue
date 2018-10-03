@@ -3,67 +3,94 @@
     <h5>{{ listTitle }}</h5>
     <Divider />
     <ArticleInfoCard v-for="article in articleList" :key="article.id" :article="article"></ArticleInfoCard>
+    <SpinContainer :noMore="noMore" :loading="loading" @on-loading="loadMoreArticleList"></SpinContainer>
   </div>
 </template>
 
 <script>
 import ArticleInfoCard from './ArticleInfoCard'
+import SpinContainer from '../others/SpinContainer'
 const LIST_TYPE = {
   HOME: 'home',
   CATEGORY: 'category'
 }
 export default {
   name: 'ArticleList',
+  components: {ArticleInfoCard, SpinContainer},
   props: {
     listType: {
       type: String,
       default: LIST_TYPE.HOME
     },
-    meta: {
+    category: {
       type: Object
     }
   },
   data () {
     return {
-      articleList: [
-        {
-          id: '1',
-          title: 'How to stop data centres from gobbling up the world’s electricity',
-          content: 'Upload your latest holiday photos to Facebook, and there’s a chance they’ll end up stored in Prineville, Oregon, a small town where the firm has built three giant data centres and is planning two more. Inside these vast factories, bigger than aircraft carriers, tens of thousands of circuit boards are racked row upon row, stretching down windowless halls so long that staff ride through the corridors on scooters.',
-          category: {
-            id: '1',
-            name: '默认分类',
-            description: ''
-          },
-          time: '3天前'
-        },
-        {
-          id: '2',
-          title: 'How to stop data centres from gobbling up the world’s electricity',
-          content: 'Upload your latest holiday photos to Facebook, and there’s a chance they’ll end up stored in Prineville, Oregon, a small town where the firm has built three giant data centres and is planning two more. Inside these vast factories, bigger than aircraft carriers, tens of thousands of circuit boards are racked row upon row, stretching down windowless halls so long that staff ride through the corridors on scooters.',
-          category: {
-            id: '1',
-            name: '默认分类',
-            description: ''
-          },
-          time: '3天前'
-        }
-      ]
+      page: this.$api.default.articles.request.params.default_page,
+      size: this.$api.default.articles.request.params.default_size,
+      noMore: false,
+      loading: false,
+      articleList: []
     }
   },
   computed: {
     listTitle: function () {
-      return this.listType === LIST_TYPE.HOME ? '最新文章' : this.meta.name
+      return this.listType === LIST_TYPE.HOME ? '最新文章' : this.category.name
     }
   },
-  components: {
-    ArticleInfoCard
+  methods: {
+    loadArticleList: function () {
+      let uri = ''
+      if (this.listType === LIST_TYPE.HOME) {
+        uri = this.$api.default.articles.uri
+      } else {
+        uri = this.$api.default.categories.uri + this.category.id.toString() + this.$api.default.articles.uri
+      }
+      let params = {
+        page: this.page,
+        size: this.size
+      }
+      this.$api.get(uri, params, response => {
+        this.noMore = false
+        if (response.data === undefined) {
+          return
+        }
+        if (response.data.length === 0) {
+          this.noMore = true
+        }
+        this.loading = true
+        response.data.forEach(article => {
+          this.articleList.push(article)
+          this.loading = false
+        })
+      })
+    },
+    loadMoreArticleList: function () {
+      this.page = this.page + 1
+      this.loadArticleList()
+    }
+  },
+  mounted () {
+    if (this.listType === LIST_TYPE.HOME) {
+      this.loadArticleList()
+    }
+  },
+  watch: {
+    category (newValue) {
+      this.loadArticleList()
+    }
   }
 }
 </script>
 
 <style lang="scss">
+#article-list {
+  padding: 0 16px;
+}
+@media screen and (max-width: 767px) {
   #article-list {
-    padding: 0 16px;
   }
+}
 </style>
