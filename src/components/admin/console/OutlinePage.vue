@@ -11,19 +11,19 @@
       <Col :xs="24" :md="12">
         <Card class="outline-card">
           <h4 slot="title">
-            <Icon type="ios-film-outline"></Icon>
+            <Icon type="md-browsers" />
             最新发布文章
           </h4>
-          <p v-for="article in articleList" :key="article.id">{{ article.time }}<Divider type="vertical"/>{{ article.title }}</p>
+          <p v-for="article in articleNewList" :key="article.id"><Time :time="article.created" /><Divider type="vertical"/><a @click="clickAticle(article.id)">{{ article.title }}</a></p>
         </Card>
       </Col>
       <Col :xs="24" :md="12">
         <Card class="outline-card">
           <h4 slot="title">
-            <Icon type="ios-film-outline"></Icon>
-            官方最新
+            <Icon type="ios-flame" />
+            最热门文章
           </h4>
-          <p v-for="article in articleList" :key="article.id">{{ article.time }}<Divider type="vertical"/>{{ article.title }}</p>
+          <p v-for="article in articleHotList" :key="article.id"><TimeContainer :time="article.created" /><a @click="clickAticle(article.id)"><Divider type="vertical"/>{{ article.title }}</a></p>
         </Card>
       </Col>
     </Row>
@@ -31,37 +31,48 @@
 </template>
 
 <script>
+import TimeContainer from '../../others/TimeContainer'
 export default {
   name: 'OutlinePage',
+  components: {TimeContainer},
   data () {
     return {
       articleTotal: 0,
       categoryTotal: 0,
-      articleList: [
-        {
-          id: '1',
-          title: 'How to stop data centres from gobbling up the world’s electricity',
-          content: 'Upload your latest holiday photos to Facebook, and there’s a chance they’ll end up stored in Prineville, Oregon, a small town where the firm has built three giant data centres and is planning two more. Inside these vast factories, bigger than aircraft carriers, tens of thousands of circuit boards are racked row upon row, stretching down windowless halls so long that staff ride through the corridors on scooters.',
-          category: {
-            id: '1',
-            name: '默认分类',
-            description: ''
-          },
-          time: '3天前'
-        },
-        {
-          id: '2',
-          title: 'How to stop data centres from gobbling up the world’s electricity',
-          content: 'Upload your latest holiday photos to Facebook, and there’s a chance they’ll end up stored in Prineville, Oregon, a small town where the firm has built three giant data centres and is planning two more. Inside these vast factories, bigger than aircraft carriers, tens of thousands of circuit boards are racked row upon row, stretching down windowless halls so long that staff ride through the corridors on scooters.',
-          category: {
-            id: '1',
-            name: '默认分类',
-            description: ''
-          },
-          time: '3天前'
-        }
-      ]
+      articleHotList: [],
+      articleNewList: []
     }
+  },
+  methods: {
+    loadHotArticleList: function () {
+      let uri = this.$api.apiInfo.articles.uri
+      let params = {
+        page: 1,
+        size: 10,
+        sortByDesc: 'traffic'
+      }
+      this.$api.get(uri, params, response => {
+        this.articleHotList = response.data.data
+      })
+    },
+    loadNewArticleList: function () {
+      let uri = this.$api.apiInfo.articles.uri
+      let params = {
+        page: 1,
+        size: 10,
+        sortByDesc: 'created'
+      }
+      this.$api.get(uri, params, response => {
+        this.articleNewList = response.data.data
+      })
+    },
+    clickAticle: function (articleId) {
+      this.$router.push({name: 'Article', params: {articleId: articleId.toString()}})
+    }
+  },
+  mounted () {
+    this.loadHotArticleList()
+    this.loadNewArticleList()
   }
 }
 </script>

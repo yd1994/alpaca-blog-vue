@@ -1,8 +1,8 @@
 <template>
-  <div id="category-simple-list">
+  <div class="category-simple-list">
     <h5>全部分类</h5>
     <Divider />
-    <p v-for="item in categoryList" :key="item.id"><a>{{ item.name }}</a></p>
+    <p v-for="category in categoryList" :key="category.id"><a @click="clickCategory(category.id)">{{ category.name }}</a></p>
   </div>
 </template>
 
@@ -11,45 +11,34 @@ export default {
   name: 'CategorySimpleList',
   data () {
     return {
-      categoryList: [
-        {
-          id: 1,
-          name: '默认分类',
-          descript: '只是默认分类'
-        },
-        {
-          id: 2,
-          name: '随笔',
-          descript: '点点滴滴'
-        },
-        {
-          id: 3,
-          name: '默认分类',
-          descript: '只是默认分类'
-        },
-        {
-          id: 4,
-          name: '随笔',
-          descript: '点点滴滴'
-        },
-        {
-          id: 5,
-          name: '默认分类',
-          descript: '只是默认分类'
-        },
-        {
-          id: 6,
-          name: '随笔',
-          descript: '点点滴滴'
-        }
-      ]
+      categoryList: [],
+      page: this.$api.apiInfo.categories.request.params.page,
+      size: this.$api.apiInfo.categories.request.params.size
     }
+  },
+  methods: {
+    loadCategoryList: function () {
+      let uri = this.$api.apiInfo.categories.uri
+      let params = {
+        page: this.page,
+        size: this.size
+      }
+      this.$api.get(uri, params, response => {
+        this.categoryList = response.data.data
+      })
+    },
+    clickCategory: function (categoryId) {
+      this.$router.push({name: 'CategoryArticle', params: {categoryId: categoryId.toString()}})
+    }
+  },
+  mounted () {
+    this.loadCategoryList()
   }
 }
 </script>
 
 <style lang="scss">
-#category-simple-list {
+.category-simple-list {
   padding: 0 16px;
   p {
     padding: 4px 16px;
@@ -58,6 +47,11 @@ export default {
     p {
       padding: 2px 8px;
     }
+  }
+}
+@media screen and (max-width: 767px) {
+  .category-simple-list {
+    padding-top: 32px;
   }
 }
 </style>

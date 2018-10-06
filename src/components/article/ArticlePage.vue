@@ -28,7 +28,7 @@ export default {
       this.$router.push({name: 'CategoryArticle', params: {categoryId: this.article.category.id.toString()}})
     },
     loadArticle: function () {
-      let uri = this.$api.default.articles.uri + this.articleId
+      let uri = this.$api.apiInfo.articles.uri + this.articleId
       let params = {}
       this.$api.get(uri, params, response => {
         this.article = response.data

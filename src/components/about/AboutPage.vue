@@ -27,7 +27,7 @@ export default {
   padding: 0 16px;
   max-width: 1024px;
 }
-@media screen and (max-width: 768px) {
+@media screen and (max-width: 767px) {
   #about-page {
   }
 }

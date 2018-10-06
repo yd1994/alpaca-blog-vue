@@ -1,23 +1,18 @@
 import axios from 'axios'
+import apiInfo from './apiInfo'
+import router from '../router'
+import vue from 'vue'
+vue.use(router)
 
 let http = axios.create({
-  baseURL: 'http://localhost:8080/',
+  baseURL: 'api',
   withCredentials: true,
   headers: {
-    'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8'
-  },
-  transformRequest: [function (data) {
-    let newData = ''
-    for (let k in data) {
-      if (data.hasOwnProperty(k) === true) {
-        newData += encodeURIComponent(k) + '=' + encodeURIComponent(data[k]) + '&'
-      }
-    }
-    return newData
-  }]
+    'Content-Type': 'application/x-www-form-urlencoded'
+  }
 })
 
-function apiAxios (method, url, params, response) {
+let apiAxios = function (method, url, params, response) {
   http({
     method: method,
     url: url,
@@ -29,6 +24,54 @@ function apiAxios (method, url, params, response) {
     response(err)
   })
 }
+
+// 请求拦截
+http.interceptors.request.use(
+  config => {
+    let url = config.url
+    if (url.indexOf('/oauth/token') === -1 && config.method !== 'get') {
+      const token = window.localStorage.token_access_token
+      if (token) {
+        let tokenExpiresTime = window.localStorage.token_expires_time
+        if (tokenExpiresTime !== undefined && tokenExpiresTime > new Date().getTime()) {
+          config.headers.Authorization = `Bearer ${token}`
+        }
+      }
+      console.info('http.interceptors.request', config)
+    }
+    return config
+  }
+)
+
+// 响应拦截
+http.interceptors.response.use(
+  response => {
+    console.info('axios response:', response)
+    let status = response.status
+    switch (status) {
+      case 200:
+        break
+    }
+    return response
+  },
+  error => {
+    console.error('axios response error:', error)
+    let status = error.status
+    switch (status) {
+      case 401:
+        router.push({name: 'AdminLogin'})
+        break
+      case 403:
+        router.push({name: 'AdminLogin'})
+        break
+      case 404:
+        break
+      case 500:
+        break
+    }
+    return Promise.reject(error)
+  }
+)
 
 export default {
   get: function (url, params, response) {
@@ -42,5 +85,6 @@ export default {
   },
   delete: function (url, params, response) {
     return apiAxios('DELETE', url, params, response)
-  }
+  },
+  apiInfo: apiInfo
 }

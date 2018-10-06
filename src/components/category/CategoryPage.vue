@@ -4,7 +4,7 @@
   <Divider />
   <div class="category-box" v-for="category in categoryList" :key="category.id">
     <h4><a @click="clickTitle(category.id)">{{ category.name }}</a></h4>
-    <p><small>{{ category.descript }}</small></p>
+    <p><small>{{ category.description }}</small></p>
   </div>
 </div>
 </template>
@@ -14,44 +14,30 @@ export default {
   name: 'Category',
   data () {
     return {
-      categoryList: [
-        {
-          id: 1,
-          name: '默认分类',
-          descript: '只是默认分类'
-        },
-        {
-          id: 2,
-          name: '随笔',
-          descript: '点点滴滴'
-        },
-        {
-          id: 3,
-          name: '默认分类',
-          descript: '只是默认分类'
-        },
-        {
-          id: 4,
-          name: '随笔',
-          descript: '点点滴滴'
-        },
-        {
-          id: 5,
-          name: '默认分类',
-          descript: '只是默认分类'
-        },
-        {
-          id: 6,
-          name: '随笔',
-          descript: '点点滴滴'
-        }
-      ]
+      categoryList: [],
+      page: this.$api.apiInfo.categories.request.params.page,
+      size: this.$api.apiInfo.categories.request.params.size
     }
   },
   methods: {
     clickTitle: function (categoryId) {
-      this.$router.push({name: 'CategoryArticle', params: {categoryId: categoryId}})
+      this.$router.push({name: 'CategoryArticle', params: {categoryId: categoryId.toString()}})
+    },
+    loadCategoryList: function () {
+      let uri = this.$api.apiInfo.categories.uri
+      let params = {
+        page: this.page,
+        size: this.size
+      }
+      this.$api.get(uri, params, response => {
+        response.data.data.forEach(category => {
+          this.categoryList.push(category)
+        })
+      })
     }
+  },
+  mounted () {
+    this.loadCategoryList()
   }
 }
 </script>
@@ -63,7 +49,7 @@ export default {
   max-width: 1024px;
   .category-box {
     margin: 0 32px;
-    padding: 12px;
+    padding: 12px 12px 12px 36px;
     border-bottom: 1px solid rgba(0, 0, 0, .1);
   }
 }

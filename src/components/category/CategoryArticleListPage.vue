@@ -1,10 +1,10 @@
 <template>
   <div id="category-article-list-page">
     <Row>
-      <Col :xs="24" :md="16">
-        <ArticleList listType="category" :meta="category"></ArticleList>
+      <Col :xs="24" :sm="16">
+        <ArticleList listType="category" :category="category"></ArticleList>
       </Col>
-      <Col :xs="24" :md="8">
+      <Col :xs="24" :sm="8">
         <CategorySimpleList></CategorySimpleList>
       </Col>
     </Row>
@@ -16,6 +16,7 @@ import ArticleList from '../article/ArticleList'
 import CategorySimpleList from './CategorySimpleList'
 export default {
   name: 'CategoryArticleListPage',
+  components: {ArticleList, CategorySimpleList},
   props: {
     categoryId: {
       type: String
@@ -23,15 +24,26 @@ export default {
   },
   data () {
     return {
-      category: {
-        id: '1',
-        name: '默认分类'
-      }
+      category: {}
     }
   },
-  components: {
-    ArticleList,
-    CategorySimpleList
+  methods: {
+    loadCategory: function () {
+      let uri = this.$api.apiInfo.categories.uri + this.categoryId
+      let params = {
+      }
+      this.$api.get(uri, params, response => {
+        this.category = response.data
+      })
+    }
+  },
+  mounted () {
+    this.loadCategory()
+  },
+  watch: {
+    categoryId: function () {
+      this.loadCategory()
+    }
   }
 }
 </script>

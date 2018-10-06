@@ -2,15 +2,10 @@
   <div class="article-management">
     <h5>文章管理</h5>
     <Divider />
-    <Row type="flex" justify="space-between">
-      <Col span="20">
-        <RadioGroup v-model="articleListType" type="button" size="small">
-          <Radio label="已发布"></Radio>
-          <Radio label="未发布"></Radio>
-        </RadioGroup>
-      </Col>
-      <Col span="4" :style="{textAlign: 'right'}">
-        <Button type="primary" @click="clickAddArticle">新增</Button>
+    <Row type="flex" justify="end">
+      <Col span="8" :style="{textAlign: 'right'}">
+        <Button type="success" @click="clickAddArticle">新增</Button>
+        <Button type="primary" @click="reloadAll">刷新</Button>
       </Col>
     </Row>
     <div class="article-management-search">
@@ -19,7 +14,8 @@
           <Input v-model="search.text" size="small" placeholder="输入标题" />
         </Col>
         <Col :xs="6" :sm="3">
-          <Select v-model="search.category" size="small">
+          <Select v-model="search.categoryId" size="small">
+            <Option value="0">不选</Option>
             <Option v-for="category in categoryList" :value="category.id" :key="category.id">{{ category.name }}</Option>
           </Select>
         </Col>
@@ -28,8 +24,9 @@
         </Col>
       </Row>
     </div>
-    <ArticleManagementCard v-for="article in articleList" :key="article.id" :article="article"></ArticleManagementCard>
-    <Page :total="100" :style="{textAlign: 'center'}" :simple="pageSimple" show-total @on-change="changePage" />
+    <ArticleManagementCard v-for="article in articleList" :key="article.id" :article="article"
+                           @data-change="reloadArticleList"/>
+    <Page :total="articleListTotal" :style="{textAlign: 'center'}" :simple="pageSimple" show-total @on-change="changePage" />
   </div>
 </template>
 
@@ -37,69 +34,25 @@
 import ArticleManagementCard from './ArticleManagementCard'
 export default {
   name: 'ArticleManagement',
+  components: {ArticleManagementCard},
   data () {
     return {
       articleListType: '已发布',
       search: {
         text: '',
-        category: ''
+        categoryId: ''
       },
-      articleList: [
-        {
-          id: '1',
-          title: 'How to stop data centres from gobbling up the world’s electricity',
-          content: 'Upload your latest holiday photos to Facebook, and there’s a chance they’ll end up stored in Prineville, Oregon, a small town where the firm has built three giant data centres and is planning two more. Inside these vast factories, bigger than aircraft carriers, tens of thousands of circuit boards are racked row upon row, stretching down windowless halls so long that staff ride through the corridors on scooters.',
-          category: {
-            id: '1',
-            name: '默认分类',
-            description: ''
-          },
-          time: '3天前'
-        },
-        {
-          id: '2',
-          title: 'How to stop data centres from gobbling up the world’s electricity',
-          content: 'Upload your latest holiday photos to Facebook, and there’s a chance they’ll end up stored in Prineville, Oregon, a small town where the firm has built three giant data centres and is planning two more. Inside these vast factories, bigger than aircraft carriers, tens of thousands of circuit boards are racked row upon row, stretching down windowless halls so long that staff ride through the corridors on scooters.',
-          category: {
-            id: '1',
-            name: '默认分类',
-            description: ''
-          },
-          time: '3天前'
-        }
-      ],
-      categoryList: [
-        {
-          id: 1,
-          name: '默认分类',
-          description: '只是默认分类'
-        },
-        {
-          id: 2,
-          name: '随笔',
-          description: '点点滴滴'
-        },
-        {
-          id: 3,
-          name: '默认分类',
-          description: '只是默认分类'
-        },
-        {
-          id: 4,
-          name: '随笔',
-          description: '点点滴滴'
-        },
-        {
-          id: 5,
-          name: '默认分类',
-          description: '只是默认分类'
-        },
-        {
-          id: 6,
-          name: '随笔',
-          description: '点点滴滴'
-        }
-      ]
+      articlePage: {
+        page: this.$api.apiInfo.articles.request.params.page,
+        size: this.$api.apiInfo.articles.request.params.size
+      },
+      articleList: [],
+      articleListTotal: 0,
+      categoryPage: {
+        page: this.$api.apiInfo.categories.request.params.page,
+        size: this.$api.apiInfo.categories.request.params.size
+      },
+      categoryList: []
     }
   },
   computed: {
@@ -109,21 +62,57 @@ export default {
   },
   methods: {
     clickSearch: function () {
-      this.$Message.info({content: 'test: ' + this.search.text + ' category: ' + this.search.category})
+      this.reloadArticleList()
     },
     clickAddArticle: function () {
-      this.$Message.info({content: 'click add article'})
+      this.$router.push({name: 'WriteArticle'})
     },
     changePage: function (page) {
+      this.articlePage.page = page
+    },
+    loadArticleList: function () {
+      let uri = this.$api.apiInfo.articles.uri
+      let params = {
+        page: this.articlePage.page,
+        size: this.articlePage.size
+      }
+      if (this.search.text !== '') {
+        params.view = this.search.text
+      }
+      if (this.search.categoryId !== '' && this.search.categoryId !== '0') {
+        params.categoryId = this.search.categoryId
+      }
+      this.$api.get(uri, params, response => {
+        this.articleList = response.data.data
+        this.articleListTotal = response.data.total
+      })
+    },
+    reloadArticleList: function () {
+      this.loadArticleList()
+    },
+    loadCategoryList: function () {
+      let uri = this.$api.apiInfo.categories.uri
+      let params = {
+        page: this.categoryPage.page,
+        size: this.categoryPage.size
+      }
+      this.$api.get(uri, params, response => {
+        this.categoryList = response.data.data
+      })
+    },
+    reloadAll: function () {
+      this.loadArticleList()
+      this.loadCategoryList()
     }
+  },
+  mounted () {
+    this.loadArticleList()
+    this.loadCategoryList()
   },
   watch: {
     articleListType: function () {
       this.$Message.info({content: 'select: ' + this.articleListType})
     }
-  },
-  components: {
-    ArticleManagementCard
   }
 }
 </script>

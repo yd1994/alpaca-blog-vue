@@ -3,7 +3,7 @@
     <h5>{{ listTitle }}</h5>
     <Divider />
     <ArticleInfoCard v-for="article in articleList" :key="article.id" :article="article"></ArticleInfoCard>
-    <SpinContainer :noMore="noMore" :loading="loading" @on-loading="loadMoreArticleList"></SpinContainer>
+    <SpinContainer :noMore="noMore" @on-loading="loadMoreArticleList"></SpinContainer>
   </div>
 </template>
 
@@ -28,10 +28,9 @@ export default {
   },
   data () {
     return {
-      page: this.$api.default.articles.request.params.default_page,
-      size: this.$api.default.articles.request.params.default_size,
+      page: this.$api.apiInfo.articles.request.params.page,
+      size: this.$api.apiInfo.articles.request.params.size,
       noMore: false,
-      loading: false,
       articleList: []
     }
   },
@@ -44,32 +43,34 @@ export default {
     loadArticleList: function () {
       let uri = ''
       if (this.listType === LIST_TYPE.HOME) {
-        uri = this.$api.default.articles.uri
+        uri = this.$api.apiInfo.articles.uri
       } else {
-        uri = this.$api.default.categories.uri + this.category.id.toString() + this.$api.default.articles.uri
+        uri = this.$api.apiInfo.categories.uri + this.category.id.toString() + this.$api.apiInfo.articles.uri
       }
       let params = {
         page: this.page,
         size: this.size
       }
+      this.noMore = false
       this.$api.get(uri, params, response => {
-        this.noMore = false
-        if (response.data === undefined) {
-          return
-        }
-        if (response.data.length === 0) {
-          this.noMore = true
-        }
-        this.loading = true
-        response.data.forEach(article => {
+        setTimeout(() => {
+          this.noMore = response.data.total <= this.articleList.length
+        }, 500)
+        response.data.data.forEach(article => {
           this.articleList.push(article)
-          this.loading = false
         })
       })
+    },
+    initArticleList: function () {
+      this.articleList.length = 0
+      this.page = this.$api.apiInfo.articles.request.params.page
+      this.size = this.$api.apiInfo.articles.request.params.size
     },
     loadMoreArticleList: function () {
       this.page = this.page + 1
       this.loadArticleList()
+    },
+    handleReachBottom: function () {
     }
   },
   mounted () {
@@ -78,7 +79,8 @@ export default {
     }
   },
   watch: {
-    category (newValue) {
+    category () {
+      this.initArticleList()
       this.loadArticleList()
     }
   }

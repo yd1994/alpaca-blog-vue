@@ -1,7 +1,7 @@
 <template>
   <div id="admin-login">
     <div class="admin-background"></div>
-    <Form :rules="ruleInline" class="admin-login-from">
+    <Form :rules="loginInfo" class="admin-login-from">
       <FormItem>
         <div class="admin-login-from-title">
           Alpaca-blog
@@ -29,15 +29,48 @@ export default {
   data () {
     return {
       loginInfo: {
-        username: '',
-        password: ''
+        username: 'admin',
+        password: '123456',
+        message: ''
       }
     }
   },
   methods: {
     clickLogin: function () {
-      let content = 'username: ' + this.loginInfo.username + ', password: ' + this.loginInfo.password
-      this.$Message.info({content: content})
+      let uri = this.$api.apiInfo.oauth.token.uri
+      this.message = ''
+      let params = {
+        grant_type: 'password',
+        scope: 'all',
+        client_id: 'client1',
+        client_secret: '123456',
+        username: this.loginInfo.username,
+        password: this.loginInfo.password
+      }
+      this.$api.post(uri, params, response => {
+        const _this = this
+        const statusMethods = {
+          method200: function () {
+            window.localStorage.token_access_token = response.data.access_token
+            // window.localStorage.token_refresh_token = response.data.refresh_token
+            window.localStorage.token_expires_in = response.data.expires_in
+            window.localStorage.token_expires_time = new Date().getTime() + response.data.expires_in * 1000
+            window.localStorage.token_scope = response.data.scope
+            window.localStorage.token_token_type = response.data.token_type
+            _this.$Message.success({content: '登录成功'})
+            _this.$router.push({name: 'Admin'})
+          },
+          method400: function () {
+            _this.message = '帐号或者密码错误'
+            _this.$Message.warning({content: '帐号或者密码错误', duration: 5})
+          },
+          method401: function () {
+            _this.message = '帐号或者密码错误'
+            _this.$Message.warning({content: '帐号或者密码错误', duration: 5})
+          }
+        }
+        this.utils.httpResponsePostProcessing(response, statusMethods)
+      })
     },
     clickBackHome: function () {
       this.$router.push({name: 'Home'})
