@@ -79,7 +79,8 @@ export default {
       let uri = this.$api.apiInfo.categories.uri
       let params = {
         page: this.categoryPage.page,
-        size: this.categoryPage.size
+        size: this.categoryPage.size,
+        sortByDesc: 'created'
       }
       this.$api.get(uri, params, response => {
         this.categoryList = response.data.data

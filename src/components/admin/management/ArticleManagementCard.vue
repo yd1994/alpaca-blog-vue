@@ -42,6 +42,7 @@ export default {
       this.$router.push({name: 'Article', params: {articleId: this.article.id.toString()}})
     },
     clickUpdateButton: function () {
+      this.$router.push({name: 'WriteArticleUpdate', params: {articleId: this.article.id.toString()}})
     },
     clickDropdown: function (name) {
       if (name === 'delete') {

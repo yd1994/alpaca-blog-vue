@@ -74,7 +74,8 @@ export default {
       let uri = this.$api.apiInfo.articles.uri
       let params = {
         page: this.articlePage.page,
-        size: this.articlePage.size
+        size: this.articlePage.size,
+        sortByDesc: 'created'
       }
       if (this.search.text !== '') {
         params.view = this.search.text
