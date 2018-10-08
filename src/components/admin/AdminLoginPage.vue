@@ -39,15 +39,14 @@ export default {
     clickLogin: function () {
       let uri = this.$api.apiInfo.oauth.token.uri
       this.message = ''
-      let params = {
-        grant_type: 'password',
-        scope: 'all',
-        client_id: 'client1',
-        client_secret: '123456',
-        username: this.loginInfo.username,
-        password: this.loginInfo.password
-      }
-      this.$api.post(uri, params, response => {
+      let formdata = new FormData()
+      formdata.append('grant_type', this.$api.apiInfo.oauth.token.request.params.grant_type)
+      formdata.append('scope', this.$api.apiInfo.oauth.token.request.params.scope)
+      formdata.append('client_id', this.$api.apiInfo.oauth.token.request.params.client_id)
+      formdata.append('client_secret', this.$api.apiInfo.oauth.token.request.params.client_secret)
+      formdata.append('username', this.loginInfo.username)
+      formdata.append('password', this.loginInfo.password)
+      this.$api.post(uri, formdata, response => {
         const _this = this
         const statusMethods = {
           method200: function () {
