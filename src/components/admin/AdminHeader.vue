@@ -54,7 +54,6 @@ export default {
        * 添加点击监听触发Submenu组件 handleMouseenter() 函数
        * ！！！点击文字方可触发
        */
-      console.info('this.$refs.subMenuConsole', this.$refs.subMenuConsole)
       switch (name) {
         case 'console':
           this.$refs.subMenuConsole.handleMouseenter()

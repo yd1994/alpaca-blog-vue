@@ -5,7 +5,10 @@
     <p :style="{margin: '16px'}">共有文章：{{ articleTotal }}</p>
     <p :style="{margin: '16px'}">共有分类：{{ categoryTotal }}</p>
     <h3 :style="{margin: '32px 0 16px'}">点击下面的链接快速开始:</h3>
-    <p><Button type="primary">撰写新文章</Button><Button type="warning" :style="{marginLeft: '16px'}">系统设置</Button></p>
+    <p>
+      <Button type="primary" @click="clickToWriteArticle">撰写新文章</Button>
+      <Button type="warning" @click="clickToOptionGeneral" :style="{marginLeft: '16px'}">系统设置</Button>
+    </p>
     <Divider />
     <Row>
       <Col :xs="24" :md="12">
@@ -66,13 +69,37 @@ export default {
         this.articleNewList = response.data.data
       })
     },
+    loadArticleTotal: function () {
+      let uri = this.$api.apiInfo.articles.totalUri
+      let params = {
+      }
+      this.$api.get(uri, params, response => {
+        this.articleTotal = response.data.data
+      })
+    },
+    loadCategoryTotal: function () {
+      let uri = this.$api.apiInfo.categories.totalUri
+      let params = {
+      }
+      this.$api.get(uri, params, response => {
+        this.categoryTotal = response.data.data
+      })
+    },
     clickAticle: function (articleId) {
       this.$router.push({name: 'Article', params: {articleId: articleId.toString()}})
+    },
+    clickToWriteArticle: function () {
+      this.$router.push({name: 'WriteArticle'})
+    },
+    clickToOptionGeneral: function () {
+      this.$router.push({name: 'OptionGeneral'})
     }
   },
   mounted () {
     this.loadHotArticleList()
     this.loadNewArticleList()
+    this.loadArticleTotal()
+    this.loadCategoryTotal()
   }
 }
 </script>

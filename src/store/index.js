@@ -6,7 +6,14 @@ Vue.use(Vuex)
 const store = new Vuex.Store({
   state: {
     screenWidth: 0, // 浏览器宽度
-    screenHeight: 0 // 浏览器高度
+    screenHeight: 0, // 浏览器高度
+    sysInformation: {
+      siteName: {},
+      siteAddress: {},
+      siteDescription: {},
+      personalName: {},
+      personalEmail: {}
+    }
   },
   mutations: {
     changeScreenWidth (state, screenWidth) {
@@ -14,6 +21,15 @@ const store = new Vuex.Store({
     },
     changeScreenHeight (state, screenHeight) {
       state.screenHeight = screenHeight
+    },
+    changeSysInformation (state, sysInformation) {
+      let name = sysInformation.name
+      let arr = name.split('_')
+      for (let i = 1; i < arr.length; i++) {
+        arr[i] = arr[i].charAt(0).toUpperCase() + arr[i].substring(1)
+      }
+      name = arr.join('')
+      state.sysInformation[name] = sysInformation
     }
   }
 })

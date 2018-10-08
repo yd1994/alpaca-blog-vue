@@ -17,6 +17,37 @@ export default {
       screenHeight: document.body.clientHeight
     }
   },
+  methods: {
+    init: function () {
+      this.initSysInformation()
+    },
+    initSysInformation: function () {
+      let siteNameUri = this.$api.apiInfo.sysInformation.siteName.uri
+      this.$api.get(siteNameUri, {}, response => {
+        this.$store.commit('changeSysInformation', response.data)
+      })
+      let siteAddressUri = this.$api.apiInfo.sysInformation.siteAddress.uri
+      this.$api.get(siteAddressUri, {}, response => {
+        this.$store.commit('changeSysInformation', response.data)
+      })
+      let siteDescriptionUri = this.$api.apiInfo.sysInformation.siteDescription.uri
+      this.$api.get(siteDescriptionUri, {}, response => {
+        this.$store.commit('changeSysInformation', response.data)
+        this.consoleSiteDescription(response.data.value)
+      })
+      let personalNameUri = this.$api.apiInfo.sysInformation.personalName.uri
+      this.$api.get(personalNameUri, {}, response => {
+        this.$store.commit('changeSysInformation', response.data)
+      })
+      let personalEmail = this.$api.apiInfo.sysInformation.personalEmail.uri
+      this.$api.get(personalEmail, {}, response => {
+        this.$store.commit('changeSysInformation', response.data)
+      })
+    },
+    consoleSiteDescription: function (siteDescription) {
+      console.info(siteDescription)
+    }
+  },
   mounted () {
     const that = this
     window.onresize = () => {
@@ -27,6 +58,7 @@ export default {
         that.screenHeight = window.clientHeight
       })()
     }
+    this.init()
   },
   watch: {
     screenWidth (screenWidth) {

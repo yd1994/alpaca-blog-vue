@@ -1,6 +1,8 @@
 export default {
+  baseUrl: 'http://127.0.0.1:9010',
   articles: {
     uri: '/articles/',
+    totalUri: '/articles/total/',
     request: {
       params: {
         page: 1,
@@ -10,6 +12,7 @@ export default {
   },
   categories: {
     uri: '/categories/',
+    totalUri: '/categories/total/',
     request: {
       params: {
         page: 1,
@@ -19,6 +22,24 @@ export default {
   },
   images: {
     uri: '/images/'
+  },
+  sysInformation: {
+    uri: '/system/information/',
+    siteName: {
+      uri: '/system/information/site_name'
+    },
+    siteAddress: {
+      uri: '/system/information/site_address'
+    },
+    siteDescription: {
+      uri: '/system/information/site_description'
+    },
+    personalName: {
+      uri: '/system/information/personal_name'
+    },
+    personalEmail: {
+      uri: '/system/information/personal_email'
+    }
   },
   oauth: {
     token: {

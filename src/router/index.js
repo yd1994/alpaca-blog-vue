@@ -40,8 +40,7 @@ let router = new Router({
         {
           path: '/categories/:categoryId/articles',
           name: 'CategoryArticle',
-          component: resolve => require(['@/components/category/CategoryArticleListPage'], resolve),
-          props: true
+          component: resolve => require(['@/components/category/CategoryArticleListPage'], resolve)
         }
       ]
     },
@@ -85,6 +84,12 @@ let router = new Router({
           path: '/admin/write/article',
           name: 'WriteArticle',
           component: resolve => require(['@/components/admin/write/WriteArticlePage.vue'], resolve)
+        },
+        {
+          path: '/admin/write/article/:articleId',
+          name: 'WriteArticleUpdate',
+          component: resolve => require(['@/components/admin/write/WriteArticlePage.vue'], resolve),
+          props: true
         }
       ]
     }

@@ -49,7 +49,8 @@ export default {
       }
       let params = {
         page: this.page,
-        size: this.size
+        size: this.size,
+        sortByDesc: 'created,top'
       }
       this.noMore = false
       this.$api.get(uri, params, response => {
