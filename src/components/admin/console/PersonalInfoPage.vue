@@ -22,18 +22,18 @@
           </FormItem>
         </Form>
         <Divider orientation="left">密码修改</Divider>
-        <Form label-position="top">
-          <FormItem label="原始密码">
-            <Input v-model="oldPassword" type="password" placeholder="原始密码" />
+        <Form ref="formPassword" label-position="top" :model="formPassword" :rules="passwordValidate">
+          <FormItem label="原始密码" prop="oldPassword">
+            <Input v-model="formPassword.oldPassword" type="password" placeholder="原始密码" />
           </FormItem>
-          <FormItem label="新密码">
-            <Input v-model="newPassword" type="password" placeholder="新密码." />
+          <FormItem label="新密码" prop="newPassword">
+            <Input v-model="formPassword.newPassword" type="password" placeholder="新密码." />
           </FormItem>
-          <FormItem label="新密码确认">
-            <Input v-model="confirmPassword" type="password" placeholder="新密码确认." />
+          <FormItem label="新密码确认" prop="confirmPassword">
+            <Input v-model="formPassword.confirmPassword" type="password" placeholder="新密码确认." />
           </FormItem>
           <FormItem>
-            <Button type="primary" @click="clickUpdatePasswordButton">更新密码</Button>
+            <Button type="primary" @click="clickUpdatePasswordButton('formPassword')">更新密码</Button>
           </FormItem>
         </Form>
       </Col>
@@ -45,12 +45,45 @@
 export default {
   name: 'PersonalInfo',
   data () {
+    const validateNewPassword = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请输入新密码'))
+      } else {
+        if (this.formPassword.confirmPassword !== '') {
+          // 对第二个密码框单独验证
+          this.$refs.formPassword.validateField('confirmPassword')
+        }
+        callback()
+      }
+    }
+    const validateConfirmPassword = (rule, value, callback) => {
+      if (value === '') {
+        callback(new Error('请再次输入新密码'))
+      } else if (value !== this.formPassword.newPassword) {
+        callback(new Error('两次输入的密码不相同!'))
+      } else {
+        callback()
+      }
+    }
     return {
       personalName: '',
       personalEmail: '',
-      oldPassword: '',
-      newPassword: '',
-      confirmPassword: ''
+      formPassword: {
+        oldPassword: '',
+        newPassword: '',
+        confirmPassword: ''
+      },
+      passwordValidate: {
+        oldPassword: [
+          { required: true, message: '请输入原密码', trigger: 'blur' }
+        ],
+        newPassword: [
+          { validator: validateNewPassword, trigger: 'blur' }
+        ],
+        confirmPassword: [
+          { validator: validateConfirmPassword, trigger: 'blur' }
+        ]
+      }
     }
   },
   methods: {
@@ -98,13 +131,41 @@ export default {
         })
       }
     },
+    updatePassword: function (oldPassword, newPassword) {
+      let uri = this.$api.apiInfo.user.password.uri
+      let params = {
+        oldPassword: oldPassword,
+        newPassword: newPassword
+      }
+      this.$api.put(uri, params, response => {
+        const _this = this
+        const statusMethods = {
+          method200: function () {
+            _this.$Message.warning({content: '修改成功', duration: 5})
+          },
+          method400: function () {
+            _this.$Message.warning({content: '帐号或者密码错误', duration: 5})
+          },
+          method401: function () {
+            _this.$Message.warning({content: '请先登录', duration: 5})
+          }
+        }
+        this.utils.httpResponsePostProcessing(response, statusMethods)
+      })
+    },
     clickPersonalUpdateButton: function () {
       this.updatePersonal()
     },
-    clickUpdatePasswordButton: function () {
+    clickUpdatePasswordButton: function (name) {
+      this.$refs[name].validate((valid) => {
+        if (valid) {
+          this.updatePassword()
+        }
+      })
     }
   },
   mounted () {
+    this.load()
   }
 }
 </script>
