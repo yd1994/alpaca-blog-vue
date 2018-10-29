@@ -2,7 +2,7 @@
   <div id="article-info-card">
     <Card :bordered="false" dis-hover :style="{maxHeight: '128px'}">
       <h4 slot="title"><a @click="clickArticle" >{{ article.title }}</a></h4>
-      <p class="card-content">{{ article.content }}</p>
+      <p class="card-content">{{ article.summary }}</p>
       <p><small>
         <a @click="clickCategory">{{ article.category.name }}</a>
         <Divider type="vertical"/>
@@ -37,12 +37,17 @@ export default {
 #article-info-card {
   margin: 16px 0;
   .card-content {
-    overflow: hidden;
+    font-size: 12px;
+    height: 36px;
+    overflow : hidden;
     text-overflow: ellipsis;
-    -webkit-line-clamp: 3;
-    word-break: break-all;
     display: -webkit-box;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
+
+    display: -moz-box;
+    -moz-line-clamp: 3;
+    -moz-box-orient: vertical;
   }
 }
 @media screen and (max-width: 767px) {

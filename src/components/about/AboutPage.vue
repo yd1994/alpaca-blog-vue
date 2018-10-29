@@ -4,20 +4,34 @@
     <Divider />
     <Row>
       <Col :xs="12" :md="8">
-        <img :style="{width: '128px', height: '128px'}" src="../../assets/头像.png"/>
+        <img :style="{width: '128px', height: '128px'}" src="../../assets/alpaca.png"/>
       </Col>
       <Col :xs="12" :md="16">
-        <h3>Join</h3>
-        <p>computer loser</p>
+        <h3>{{ personalName }}</h3>
+        <p>{{ personalEmail }}</p>
       </Col>
     </Row>
-    <p>关于66666666666666666666666</p>
+    <Card>
+      <p slot="title">简介</p>
+      <p>{{ personalContent }}</p>
+    </Card>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'AboutPage'
+  name: 'AboutPage',
+  computed: {
+    personalName: function () {
+      return this.$store.state.sysInformation.personalName.value
+    },
+    personalEmail: function () {
+      return this.$store.state.sysInformation.personalEmail.value
+    },
+    personalContent: function () {
+      return this.$store.state.sysInformation.personalContent.value
+    }
+  }
 }
 </script>
 

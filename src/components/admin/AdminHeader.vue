@@ -12,7 +12,6 @@
         <MenuItem name="PersonalInfo">个人信息</MenuItem>
       </Submenu>
       <MenuItem class="model-menu-item" name="WriteArticle">
-        <Icon class="item-icon" type="md-code" />
         撰写
       </MenuItem>
       <Submenu ref="subMenuManagement" class="model-menu-item" name="management">
@@ -32,6 +31,9 @@
         </template>
         <MenuItem name="OptionGeneral">基本</MenuItem>
       </Submenu>
+      <MenuItem class="model-menu-item" name="Home">
+        首页
+      </MenuItem>
     </Menu>
   </div>
 </template>

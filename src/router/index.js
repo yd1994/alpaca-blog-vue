@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import iView from 'iview'
 Vue.use(iView.LoadingBar)
+Vue.use(iView.Message)
 
 Vue.use(Router)
 
@@ -40,7 +41,8 @@ let router = new Router({
         {
           path: '/categories/:categoryId/articles',
           name: 'CategoryArticle',
-          component: resolve => require(['@/components/category/CategoryArticleListPage'], resolve)
+          component: resolve => require(['@/components/category/CategoryArticleListPage'], resolve),
+          props: true
         }
       ]
     },
@@ -54,20 +56,24 @@ let router = new Router({
       name: 'Admin',
       component: resolve => require(['@/components/admin/AdminPage'], resolve),
       redirect: '/admin/console/outline',
+      meta: { requiresAuth: true },
       children: [
         {
           path: '/admin/console/outline',
           name: 'Outline',
+          meta: { requiresAuth: true },
           component: resolve => require(['@/components/admin/console/OutlinePage'], resolve)
         },
         {
           path: '/admin/console/personalInfo',
           name: 'PersonalInfo',
+          meta: { requiresAuth: true },
           component: resolve => require(['@/components/admin/console/PersonalInfoPage'], resolve)
         },
         {
           path: '/admin/management/article',
           name: 'ArticleManagement',
+          meta: { requiresAuth: true },
           component: resolve => require(['@/components/admin/management/ArticleManagementPage'], resolve)
         },
         {
@@ -78,6 +84,7 @@ let router = new Router({
         {
           path: '/admin/option/general',
           name: 'OptionGeneral',
+          meta: { requiresAuth: true },
           component: resolve => require(['@/components/admin/options/OptionGeneral.vue'], resolve)
         },
         {
@@ -88,6 +95,7 @@ let router = new Router({
         {
           path: '/admin/write/article/:articleId',
           name: 'WriteArticleUpdate',
+          meta: { requiresAuth: true },
           component: resolve => require(['@/components/admin/write/WriteArticlePage.vue'], resolve),
           props: true
         }
@@ -98,6 +106,23 @@ let router = new Router({
 
 router.beforeEach((to, from, next) => {
   iView.LoadingBar.start()
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    const token = window.localStorage.token_access_token
+    if (token !== undefined) {
+      const tokenExpiresTime = window.localStorage.token_expires_time
+      console.info('tokenExpiresTime', tokenExpiresTime < new Date().getTime())
+      if (tokenExpiresTime !== undefined && new Date().getTime() < tokenExpiresTime) {
+        // token存在并且未过期
+        next()
+        return
+      }
+    }
+    iView.Message.warning('需要登录')
+    next({
+      name: 'AdminLogin'
+    })
+    return
+  }
   next()
 })
 

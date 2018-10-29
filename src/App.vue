@@ -33,7 +33,6 @@ export default {
       let siteDescriptionUri = this.$api.apiInfo.sysInformation.siteDescription.uri
       this.$api.get(siteDescriptionUri, {}, response => {
         this.$store.commit('changeSysInformation', response.data)
-        this.consoleSiteDescription(response.data.value)
       })
       let personalNameUri = this.$api.apiInfo.sysInformation.personalName.uri
       this.$api.get(personalNameUri, {}, response => {
@@ -43,9 +42,10 @@ export default {
       this.$api.get(personalEmail, {}, response => {
         this.$store.commit('changeSysInformation', response.data)
       })
-    },
-    consoleSiteDescription: function (siteDescription) {
-      console.info(siteDescription)
+      let personalContent = this.$api.apiInfo.sysInformation.personalContent.uri
+      this.$api.get(personalContent, {}, response => {
+        this.$store.commit('changeSysInformation', response.data)
+      })
     }
   },
   mounted () {
@@ -58,6 +58,8 @@ export default {
         that.screenHeight = window.clientHeight
       })()
     }
+    that.$store.commit('changeScreenWidth', document.body.clientWidth)
+    that.$store.commit('changeScreenHeight', document.body.clientHeight)
     this.init()
   },
   watch: {

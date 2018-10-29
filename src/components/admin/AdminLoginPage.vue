@@ -30,7 +30,7 @@ export default {
     return {
       loginInfo: {
         username: 'admin',
-        password: '123456',
+        password: '',
         message: ''
       }
     }
@@ -39,14 +39,27 @@ export default {
     clickLogin: function () {
       let uri = this.$api.apiInfo.oauth.token.uri
       this.message = ''
-      let formdata = new FormData()
+      let params = {
+        grant_type: this.$api.apiInfo.oauth.token.request.params.grant_type,
+        scope: this.$api.apiInfo.oauth.token.request.params.scope,
+        client_id: this.$api.apiInfo.oauth.token.request.params.client_id,
+        client_secret: this.$api.apiInfo.oauth.token.request.params.client_secret,
+        username: this.loginInfo.username,
+        password: this.loginInfo.password
+      }
+      let formdata = JSON.stringify(
+        params
+      )
+      console.info(formdata)
+      /*
       formdata.append('grant_type', this.$api.apiInfo.oauth.token.request.params.grant_type)
       formdata.append('scope', this.$api.apiInfo.oauth.token.request.params.scope)
       formdata.append('client_id', this.$api.apiInfo.oauth.token.request.params.client_id)
       formdata.append('client_secret', this.$api.apiInfo.oauth.token.request.params.client_secret)
       formdata.append('username', this.loginInfo.username)
       formdata.append('password', this.loginInfo.password)
-      this.$api.post(uri, formdata, response => {
+      */
+      this.$api.post(uri, params, response => {
         const _this = this
         const statusMethods = {
           method200: function () {

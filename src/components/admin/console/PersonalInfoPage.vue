@@ -17,6 +17,10 @@
             <Input v-model="personalEmail" type="email" placeholder="电子邮箱地址将作为此用户的主要联系方式."/>
             <p><small>电子邮箱地址将作为此用户的主要联系方式.</small></p>
           </FormItem>
+          <FormItem label="简介">
+            <Input v-model="personalContent" type="textarea" placeholder="个人的简介."/>
+            <p><small>个人的简介.</small></p>
+          </FormItem>
           <FormItem>
             <Button type="primary" @click="clickPersonalUpdateButton">更新个人资料</Button>
           </FormItem>
@@ -68,6 +72,7 @@ export default {
     return {
       personalName: '',
       personalEmail: '',
+      personalContent: '',
       formPassword: {
         oldPassword: '',
         newPassword: '',
@@ -90,10 +95,12 @@ export default {
     init: function () {
       this.personalName = this.$store.state.sysInformation.personalName.value
       this.personalEmail = this.$store.state.sysInformation.personalEmail.value
+      this.personalContent = tthis.$store.state.sysInformation.personalContent.value
     },
     load: function () {
       this.loadPersonalName()
       this.loadPersonalEmail()
+      this.loadPersonalContent()
     },
     loadPersonalName: function () {
       let sitePersonalName = this.$api.apiInfo.sysInformation.personalName.uri
@@ -107,6 +114,13 @@ export default {
       this.$api.get(sitePersonalEmail, {}, response => {
         this.$store.commit('changeSysInformation', response.data)
         this.personalEmail = this.$store.state.sysInformation.personalEmail.value
+      })
+    },
+    loadPersonalContent: function () {
+      let sitePersonalContent = this.$api.apiInfo.sysInformation.personalContent.uri
+      this.$api.get(sitePersonalContent, {}, response => {
+        this.$store.commit('changeSysInformation', response.data)
+        this.personalContent = this.$store.state.sysInformation.personalContent.value
       })
     },
     updatePersonal: function () {
@@ -128,6 +142,16 @@ export default {
         }
         this.$api.put(personalEmailUri, params, response => {
           this.loadPersonalEmail()
+        })
+      }
+      if (this.personalContent !== this.$store.state.sysInformation.personalContent.value) {
+        let personalContentUri = this.$api.apiInfo.sysInformation.personalContent.uri
+        let params = {
+          value: this.personalContent,
+          version: this.$store.state.sysInformation.personalContent.version
+        }
+        this.$api.put(personalContentUri, params, response => {
+          this.loadPersonalContent()
         })
       }
     },

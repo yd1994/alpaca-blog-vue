@@ -1,5 +1,5 @@
 export default {
-  baseUrl: 'http://127.0.0.1:9010',
+  baseUrl: 'http://139.159.253.51:9010',
   articles: {
     uri: '/articles/',
     totalUri: '/articles/total/',
@@ -39,6 +39,15 @@ export default {
     },
     personalEmail: {
       uri: '/system/information/personal_email'
+    },
+    personalContent: {
+      uri: '/system/information/personal_content'
+    }
+  },
+  user: {
+    uri: '/user/',
+    password: {
+      uri: '/user/password/'
     }
   },
   oauth: {

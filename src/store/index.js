@@ -12,7 +12,8 @@ const store = new Vuex.Store({
       siteAddress: {},
       siteDescription: {},
       personalName: {},
-      personalEmail: {}
+      personalEmail: {},
+      personalContent: {}
     }
   },
   mutations: {
@@ -22,7 +23,11 @@ const store = new Vuex.Store({
     changeScreenHeight (state, screenHeight) {
       state.screenHeight = screenHeight
     },
-    changeSysInformation (state, sysInformation) {
+    changeSysInformation (state, data) {
+      if (data.status && data.status === 404) {
+        return
+      }
+      let sysInformation = data
       let name = sysInformation.name
       let arr = name.split('_')
       for (let i = 1; i < arr.length; i++) {

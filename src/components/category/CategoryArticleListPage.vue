@@ -33,6 +33,7 @@ export default {
       let params = {
       }
       this.$api.get(uri, params, response => {
+        console.info('loadCategory', response.data)
         this.category = response.data
       })
     }

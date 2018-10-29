@@ -13,7 +13,7 @@
         <FormItem label="置顶">
           <i-switch v-model="article.top" />
         </FormItem>
-        <FormItem label="置顶">
+        <FormItem label="分类">
           <Select v-model="article.category.id">
             <Option v-for="category in categoryList" :value="category.id" :key="category.id">{{ category.name }}</Option>
           </Select>

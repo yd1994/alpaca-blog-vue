@@ -2,8 +2,8 @@
   <div id="about">
     <Card :bordered="bordered" dis-hover>
       <h5 slot="title">关于博主</h5>
-      <p><Avatar shape="square" icon="ios-person" size="large" /><strong :style="{marginLeft: '16px'}">Join</strong></p>
-      <p>computer loser</p>
+      <p><img :style="{width: '64px', height: '64px'}" src="../../assets/alpaca.png"/><strong :style="{marginLeft: '16px'}">{{ personalName }}</strong></p>
+      <p>{{ personalEmail }}</p>
       <p><router-link to="about">了解更多</router-link></p>
     </Card>
   </div>
@@ -19,6 +19,12 @@ export default {
   computed: {
     bordered: function () {
       return this.$store.state.screenWidth < 767
+    },
+    personalName: function () {
+      return this.$store.state.sysInformation.personalName.value
+    },
+    personalEmail: function () {
+      return this.$store.state.sysInformation.personalEmail.value
     }
   }
 }

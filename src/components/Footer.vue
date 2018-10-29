@@ -1,6 +1,6 @@
 <template>
   <div id="footer">
-    <p>2018 - yd - localhost:8080</p>
+    <p>2018 - yd - www.yd1994.com</p>
   </div>
 </template>
 
