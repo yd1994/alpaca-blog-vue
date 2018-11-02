@@ -43,6 +43,11 @@ let router = new Router({
           name: 'CategoryArticle',
           component: resolve => require(['@/components/category/CategoryArticleListPage'], resolve),
           props: true
+        },
+        {
+          path: '/search',
+          name: 'SearchPage',
+          component: resolve => require(['@/components/search/SearchPage'], resolve)
         }
       ]
     },

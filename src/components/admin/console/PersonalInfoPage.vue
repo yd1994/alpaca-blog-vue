@@ -95,7 +95,7 @@ export default {
     init: function () {
       this.personalName = this.$store.state.sysInformation.personalName.value
       this.personalEmail = this.$store.state.sysInformation.personalEmail.value
-      this.personalContent = tthis.$store.state.sysInformation.personalContent.value
+      this.personalContent = this.$store.state.sysInformation.personalContent.value
     },
     load: function () {
       this.loadPersonalName()

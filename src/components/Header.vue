@@ -6,7 +6,7 @@
           <img class="header-row-logo" src="../assets/logo.png" @click="clickLogo" />
         </div>
       </Col>
-      <Col :xs="{ span: 12}" :sm="{ span: 16}">
+      <Col :xs="{ span: 20}" :sm="{ span: 20}">
         <div class="header-row-nav">
           <Menu class="header-row-menu" mode="horizontal" @on-select="clickMenu" :active-name="actionMenuItem">
             <MenuItem name="Home">
@@ -21,9 +21,9 @@
           </Menu>
         </div>
       </Col>
-      <Col :xs="{ span: 11}" :sm="{ span: 5}">
+      <Col :xs="{ span: 4}" :sm="{ span: 2}">
         <div class="header-row-search">
-          <Input search placeholder="搜索" />
+          <Button @click="clickSearchButton" type="success" shape="circle" icon="ios-search">搜索</Button>
         </div>
       </Col>
     </Row>
@@ -51,6 +51,9 @@ export default {
     },
     changeMenu: function (name) {
       this.actionMenuItem = name
+    },
+    clickSearchButton: function () {
+      this.$router.push({ name: 'SearchPage' })
     }
   },
   components: {
