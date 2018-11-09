@@ -30,7 +30,7 @@ export default {
         size: this.size
       }
       this.$api.get(uri, params, response => {
-        response.data.data.forEach(category => {
+        response.data.data.data.forEach(category => {
           this.categoryList.push(category)
         })
       })

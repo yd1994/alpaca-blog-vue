@@ -83,7 +83,7 @@ export default {
         sortByDesc: 'created'
       }
       this.$api.get(uri, params, response => {
-        this.categoryList = response.data.data
+        this.categoryList = response.data.data.data
         this.categoryListTotal = response.data.total
       })
     },

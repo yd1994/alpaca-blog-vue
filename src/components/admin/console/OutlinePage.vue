@@ -55,7 +55,7 @@ export default {
         sortByDesc: 'traffic'
       }
       this.$api.get(uri, params, response => {
-        this.articleHotList = response.data.data
+        this.articleHotList = response.data.data.data
       })
     },
     loadNewArticleList: function () {
@@ -66,7 +66,7 @@ export default {
         sortByDesc: 'created'
       }
       this.$api.get(uri, params, response => {
-        this.articleNewList = response.data.data
+        this.articleNewList = response.data.data.data
       })
     },
     loadArticleTotal: function () {

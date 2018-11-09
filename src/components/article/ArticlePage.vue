@@ -60,7 +60,7 @@ export default {
       let uri = this.$api.apiInfo.articles.uri + this.articleId
       let params = {}
       this.$api.get(uri, params, response => {
-        this.article = response.data
+        this.article = response.data.data
       })
     }
   },

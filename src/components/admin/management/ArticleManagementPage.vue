@@ -84,7 +84,7 @@ export default {
         params.categoryId = this.search.categoryId
       }
       this.$api.get(uri, params, response => {
-        this.articleList = response.data.data
+        this.articleList = response.data.data.data
         this.articleListTotal = response.data.total
       })
     },
@@ -98,7 +98,7 @@ export default {
         size: this.categoryPage.size
       }
       this.$api.get(uri, params, response => {
-        this.categoryList = response.data.data
+        this.categoryList = response.data.data.data
       })
     },
     reloadAll: function () {

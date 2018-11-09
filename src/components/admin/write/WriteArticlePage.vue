@@ -118,7 +118,7 @@ export default {
         size: this.categoryPage.size
       }
       this.$api.get(uri, params, response => {
-        this.categoryList = response.data.data
+        this.categoryList = response.data.data.data
       })
     },
     loadArticle: function (articleId) {
@@ -126,7 +126,7 @@ export default {
       let params = {
       }
       this.$api.get(uri, params, response => {
-        let article = response.data
+        let article = response.data.data
         console.info('loadArticle', article)
         this.article.title = article.title
         this.article.summary = article.summary

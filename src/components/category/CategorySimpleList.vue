@@ -24,7 +24,7 @@ export default {
         size: this.size
       }
       this.$api.get(uri, params, response => {
-        this.categoryList = response.data.data
+        this.categoryList = response.data.data.data
       })
     },
     clickCategory: function (categoryId) {

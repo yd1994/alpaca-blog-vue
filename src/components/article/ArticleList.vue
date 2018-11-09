@@ -55,9 +55,9 @@ export default {
       this.noMore = false
       this.$api.get(uri, params, response => {
         setTimeout(() => {
-          this.noMore = response.data.total <= this.articleList.length
+          this.noMore = response.data.data.total <= this.articleList.length
         }, 500)
-        response.data.data.forEach(article => {
+        response.data.data.data.forEach(article => {
           this.articleList.push(article)
         })
       })
