@@ -75,19 +75,15 @@ export default {
       height: 60px;
       ul {
         li {
-          color: rgba(0, 0, 0, .2);
+          color: black;
         }
         .ivu-menu-item-active {
           color: black;
-          border-bottom: 1px solid black;
+          border-bottom: 0;
         }
         .ivu-menu-item:hover {
           color: #515a6e;
           border-bottom: 1px solid #515a6e;
-        }
-        .ivu-menu-item:active {
-          color: black;
-          border-bottom: none;
         }
         /*
         .ivu-menu-item:hover + .ivu-menu-item-active {
