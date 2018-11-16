@@ -1,6 +1,6 @@
 <template>
-  <div id="article-info-card">
-    <Card :bordered="false" dis-hover :style="{maxHeight: '128px'}">
+  <div id="article-info-card" @click="clickCard">
+    <Card :bordered="ordered" dis-hover :style="{maxHeight: '128px'}">
       <h4 slot="title"><a @click="clickArticle" >{{ article.title }}</a></h4>
       <p class="card-content">{{ article.summary }}</p>
       <p><small>
@@ -21,6 +21,9 @@ export default {
     }
   },
   computed: {
+    ordered: function () {
+      return this.$store.state.screenWidth < 767
+    }
   },
   methods: {
     clickArticle: function () {
@@ -28,6 +31,11 @@ export default {
     },
     clickCategory: function () {
       this.$router.push({name: 'CategoryArticle', params: {categoryId: this.article.category.id.toString()}})
+    },
+    clickCard: function () {
+      if (this.ordered) {
+        this.clickArticle()
+      }
     }
   }
 }
