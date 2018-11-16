@@ -1,9 +1,8 @@
 <template>
   <div id="article-page">
     <Breadcrumb>
-      <BreadcrumbItem to="/" target="首页">首页</BreadcrumbItem>
-      <BreadcrumbItem v-if="article.category != undefined" :to="toCategoryUri"
-                      target="article.category.name">{{ article.category.name }}</BreadcrumbItem>
+      <BreadcrumbItem to="/">首页</BreadcrumbItem>
+      <BreadcrumbItem v-if="article.category != undefined" :to="toCategoryUri">{{ article.category.name }}</BreadcrumbItem>
       <BreadcrumbItem>{{ article.title }}</BreadcrumbItem>
     </Breadcrumb>
     <Divider />
@@ -32,7 +31,7 @@ import 'mavon-editor/dist/css/index.css'
 import { mavonEditor } from 'mavon-editor'
 export default {
   name: 'ArticlePage',
-  components: {mavonEditor},
+  components: { mavonEditor },
   props: {
     articleId: {
       type: String
