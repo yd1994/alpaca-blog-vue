@@ -2,7 +2,6 @@
   <Drawer title="Alpaca Blog" placement="left" :closable="false" v-model="show" @on-close="onCloseDrawer">
     <CellGroup>
       <Cell title="后台管理" to="/admin" />
-      <Cell title="登陆" label="管理员登陆" to="/admin/login" />
     </CellGroup>
   </Drawer>
 </template>
