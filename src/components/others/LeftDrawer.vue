@@ -1,6 +1,7 @@
 <template>
-  <Drawer title="Alpaca Blog" placement="left" :closable="false" v-model="show" @on-close="onCloseDrawer">
-    <CellGroup>
+  <Drawer title="Alpaca Blog" placement="left" :closable="false" :inner="true" v-model="show" @on-close="onCloseDrawer">
+    <CellGroup @on-click="clickCell">
+      <Cell title="关于博主" to="/about"  />
       <Cell title="后台管理" to="/admin" />
     </CellGroup>
   </Drawer>
@@ -27,6 +28,9 @@ export default {
   methods: {
     onCloseDrawer: function () {
       this.$emit('change', false)
+    },
+    clickCell: function () {
+      this.show = false
     }
   },
   watch: {
