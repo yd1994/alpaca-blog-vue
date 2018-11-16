@@ -21,7 +21,7 @@
       </Form>
     </Card>
     <mavon-editor ref="mavonEditor" v-model="article.content"
-                  :subfield="subfuelf" @imgAdd="imageAdd" />
+                  :subfield="subfuelf" @imgAdd="imageAdd" @save="clickSaveButton"/>
     <Card dis-hover>
       <Button type="success" long @click="clickSaveButton">保存</Button>
     </Card>
