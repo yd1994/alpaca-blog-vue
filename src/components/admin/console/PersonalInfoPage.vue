@@ -155,11 +155,11 @@ export default {
         })
       }
     },
-    updatePassword: function (oldPassword, newPassword) {
+    updatePassword: function () {
       let uri = this.$api.apiInfo.user.password.uri
       let params = {
-        oldPassword: oldPassword,
-        newPassword: newPassword
+        oldPassword: this.formPassword.oldPassword,
+        newPassword: this.formPassword.newPassword
       }
       this.$api.put(uri, params, response => {
         const _this = this
