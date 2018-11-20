@@ -1,5 +1,5 @@
 export default {
-  baseUrl: 'http://139.159.253.51:9010',
+  baseUrl: 'https://www.yd1994.com/api',
   articles: {
     uri: '/articles/',
     totalUri: '/articles/total/',
@@ -13,6 +13,16 @@ export default {
   categories: {
     uri: '/categories/',
     totalUri: '/categories/total/',
+    request: {
+      params: {
+        page: 1,
+        size: 30
+      }
+    }
+  },
+  articleTags: {
+    uri: '/articleTags/',
+    totalUri: '/articleTags/total/',
     request: {
       params: {
         page: 1,
