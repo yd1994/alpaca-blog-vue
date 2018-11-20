@@ -16,6 +16,9 @@
         <span v-if="article.traffic != undefined" @click="clickCategory">阅读量：{{ article.traffic }}</span>
       </small>
     </p>
+    <div class="article-page-tag" v-if="article.articleTagList !== null">
+      <Tag color="red" v-for="tag in article.articleTagList" :key="tag.id">{{tag.name}}</Tag>
+    </div>
     <div class="article-page-content">
       <mavon-editor v-model="article.content"
                     :toolbarsFlag="false"
@@ -76,6 +79,9 @@ export default {
   max-width: 1024px;
   h2 {
     padding: 4px 0px;
+  }
+  .article-page-tag {
+    margin-top: 12px;
   }
   .article-page-content {
     padding: 48px 0;

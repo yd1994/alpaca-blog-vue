@@ -18,6 +18,14 @@
             <Option v-for="category in categoryList" :value="category.id" :key="category.id">{{ category.name }}</Option>
           </Select>
         </FormItem>
+        <FormItem label="标签">
+          <Select v-model="articleTags" multiple>
+            <Option v-for="tag in articleTagList" :value="tag.id" :key="tag.id">{{ tag.name }}</Option>
+          </Select>
+        </FormItem>
+        <FormItem label="">
+          <Button type="primary" size="small" @click="articleTagFrom.show = true">添加标签</Button>
+        </FormItem>
       </Form>
     </Card>
     <mavon-editor ref="mavonEditor" v-model="article.content"
@@ -25,6 +33,19 @@
     <Card dis-hover>
       <Button type="success" long @click="clickSaveButton">保存</Button>
     </Card>
+    <Modal v-model="articleTagFrom.show" title="添加标签" :footer-hide="true">
+      <Form :label-width="80" :model="articleTagFrom.articleTag" :rules="articleTagFrom.ruleValidate">
+        <FormItem label="标签名称" prop="name">
+          <Input v-model="articleTagFrom.articleTag.name" placeholder="标签名称"></Input>
+        </FormItem>
+        <FormItem label="标签描述">
+          <Input type="textarea" v-model="articleTagFrom.articleTag.description" placeholder="标签描述"></Input>
+        </FormItem>
+        <FormItem>
+          <Button type="primary" @click="clickArticleTagFromOK">添加</Button>
+        </FormItem>
+      </Form>
+    </Modal>
   </div>
 </template>
 
@@ -42,11 +63,23 @@ export default {
   data () {
     return {
       article: { title: '', summary: '', top: false, content: '', version: 0, category: { id: 0 } },
+      articleTags: [],
       categoryPage: {
         page: this.$api.apiInfo.categories.request.params.page,
         size: this.$api.apiInfo.categories.request.params.size
       },
-      categoryList: []
+      categoryList: [],
+      articleTagList: [],
+      articleTagFrom: {
+        show: false,
+        articleTag: {
+          name: '',
+          description: ''
+        },
+        ruleValidate: {
+          name: [{required: true, message: '标签名称不能为空', trigger: 'blur'}]
+        }
+      }
     }
   },
   computed: {
@@ -60,7 +93,6 @@ export default {
       formdata.append('image', $file)
       let uri = this.$api.apiInfo.images.uri
       this.$api.post(uri, formdata, response => {
-        console.info('imageAdd', response)
         let url = this.$api.apiInfo.baseUrl + this.$api.apiInfo.images.uri + response.data.data.toString()
         this.$refs.mavonEditor.$img2Url(pos, url)
       })
@@ -73,6 +105,12 @@ export default {
         top: this.article.top,
         content: this.article.content,
         'category.id': this.article.category.id
+      }
+      if (this.articleTags !== undefined) {
+        let tapIndex = 0
+        this.articleTags.forEach(e => {
+          params['articleTagList[' + tapIndex++ + '].id'] = e
+        })
       }
       this.$api.post(uri, params, response => {
         const _this = this
@@ -93,6 +131,12 @@ export default {
         content: this.article.content,
         version: this.article.version,
         'category.id': this.article.category.id
+      }
+      if (this.articleTags !== undefined) {
+        let tapIndex = 0
+        this.articleTags.forEach(e => {
+          params['articleTagList[' + tapIndex++ + '].id'] = e
+        })
       }
       this.$api.put(uri, params, response => {
         const _this = this
@@ -121,13 +165,22 @@ export default {
         this.categoryList = response.data.data.data
       })
     },
+    loadArticleTagList: function () {
+      let uri = this.$api.apiInfo.articleTags.uri
+      let params = {
+        page: 1,
+        size: 100
+      }
+      this.$api.get(uri, params, response => {
+        this.articleTagList = response.data.data.data
+      })
+    },
     loadArticle: function (articleId) {
       let uri = this.$api.apiInfo.articles.uri + articleId
       let params = {
       }
       this.$api.get(uri, params, response => {
         let article = response.data.data
-        console.info('loadArticle', article)
         this.article.title = article.title
         this.article.summary = article.summary
         this.article.top = article.top
@@ -136,6 +189,23 @@ export default {
         if (article.category !== undefined) {
           this.article.category.id = article.category.id
         }
+        if (article.articleTagList !== undefined) {
+          article.articleTagList.forEach(e => {
+            this.articleTags.push(e.id)
+          })
+        }
+      })
+    },
+    clickArticleTagFromOK: function () {
+      let uri = this.$api.apiInfo.articleTags.uri
+      let params = {
+        name: this.articleTagFrom.articleTag.name,
+        description: this.articleTagFrom.articleTag.description
+      }
+      this.$api.post(uri, params, response => {
+        this.articleTagFrom.show = false
+        this.$Message.success('添加成功！')
+        this.loadArticleTagList()
       })
     }
   },
@@ -144,6 +214,7 @@ export default {
   },
   mounted () {
     this.loadCategoryList()
+    this.loadArticleTagList()
     if (this.articleId !== '') {
       this.loadArticle(this.articleId)
     }
