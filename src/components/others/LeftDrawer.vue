@@ -30,7 +30,7 @@ export default {
       this.$emit('change', false)
     },
     clickCell: function () {
-      this.show = false
+      this.$emit('change', false)
     }
   },
   watch: {
